@@ -4,6 +4,7 @@ Introduction
 This is a simple browser for `OPDS`_ catalogs.
 
 This application is just an experiment with:
+
     * `PyQt`_
     * `ElementTree`_
     * `OPDS`_
