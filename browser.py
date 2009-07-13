@@ -80,6 +80,11 @@ class OPDSEntry(OPDSGeneric):
         super(OPDSEntry, self).__init__(entry, QtGui.QListWidgetItem.Type+2)
 
 def is_catalogue(links):
+    ''' check whether the specified set of links is for a catalogue
+
+(unfortunately, currently there's no better way to distinguish between
+catalogue & book entries
+'''
     for link in links:
         if link['type'] == 'application/atom+xml' and 'rel' not in link:
             return True
