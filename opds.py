@@ -15,6 +15,8 @@
 #  License for the specific language governing permissions and limitations
 #  under the License.
 
+''' A simple wrapper over urllib2 & ElementTree to extract data from OPDS catalogs '''
+
 import sys
 
 assert sys.version_info[0] > 2 or (sys.version_info[0] == 2 and sys.version_info[1] >= 5), 'Sorry, you need a more recent version of python'
@@ -42,11 +44,18 @@ UPDATED_ELEM = '{%s}updated' % ATOM_NS
 CONTENT_ELEM = '{%s}content' % ATOM_NS
 
 def parse_link(link):
+    '''\
+a simple "parser" for the <link>
+
+basically just returns the attirbutes
+'''
     assert link.tag == LINK_ELEM
 
     return link.attrib
 
 def parse_author(author):
+    ''' extracts textual information from pre-defined children '''
+
     assert author.tag == AUTHOR_ELEM
 
     result = {
@@ -57,14 +66,16 @@ def parse_author(author):
 
     for child in author:
         if child.tag.startswith(ATOM_NS_PREFIX):
-            property = child.tag[ATOM_NS_PREFIX_LEN:]
+            construct = child.tag[ATOM_NS_PREFIX_LEN:]
 
-            if property in result:
-                result[property] = child.text
+            if construct in result:
+                result[construct] = child.text
 
     return result
 
 def parse_entry(entry):
+    ''' parses the entry '''
+
     author = None
     title = None
     links = []
@@ -83,12 +94,12 @@ def parse_entry(entry):
         elif child.tag == UPDATED_ELEM:
             updated = child.text
         elif child.tag == CONTENT_ELEM:
-            type = child.get('type', 'text')
+            content_type = child.get('type', 'text')
 
-            if type == 'text':
-                content = type, child.text
+            if content_type == 'text':
+                content = content_type, child.text
             else:
-                content = type, tostring(child)
+                content = content_type, tostring(child)
         elif child.tag.startswith(DC_NS_PREFIX):
             dcore.append((child.tag[DC_NS_PREFIX_LEN:], child.text, child.attrib))
         else:
@@ -105,6 +116,8 @@ def parse_entry(entry):
     }
 
 def parse_catalog(catalog):
+    ''' parses an atom feed thinking that it is OPDS compliant '''
+
     author = None
     title = None
     links = []
@@ -140,6 +153,8 @@ def load(url):
     return parse_catalog(parse(urlopen(request)).getroot())
 
 def main(url):
+    ''' pretty much test code '''
+
     print url
     print '='*len(url)
 
