@@ -27,6 +27,7 @@ from pprint import pformat
 
 ATOM_NS = 'http://www.w3.org/2005/Atom'
 ATOM_NS_PREFIX = '{%s}' % ATOM_NS
+ATOM_NS_PREFIX_LEN = len(ATOM_NS_PREFIX)
 
 AUTHOR_ELEM = '{%s}author' % ATOM_NS
 TITLE_ELEM = '{%s}title' % ATOM_NS
@@ -52,7 +53,7 @@ def parse_author(author):
 
     for child in author:
         if child.tag.startswith(ATOM_NS_PREFIX):
-            property = child.tag[len(ATOM_NS_PREFIX):]
+            property = child.tag[ATOM_NS_PREFIX_LEN:]
 
             if property in result:
                 result[property] = child.text
