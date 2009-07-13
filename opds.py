@@ -29,6 +29,10 @@ ATOM_NS = 'http://www.w3.org/2005/Atom'
 ATOM_NS_PREFIX = '{%s}' % ATOM_NS
 ATOM_NS_PREFIX_LEN = len(ATOM_NS_PREFIX)
 
+DC_NS = 'http://purl.org/dc/elements/1.1/'
+DC_NS_PREFIX = '{%s}' % DC_NS
+DC_NS_PREFIX_LEN = len(DC_NS_PREFIX)
+
 AUTHOR_ELEM = '{%s}author' % ATOM_NS
 TITLE_ELEM = '{%s}title' % ATOM_NS
 LINK_ELEM = '{%s}link' % ATOM_NS
@@ -64,6 +68,7 @@ def parse_entry(entry):
     author = None
     title = None
     links = []
+    dcore = []
     others = []
     content = None, None
     updated = None
@@ -84,6 +89,8 @@ def parse_entry(entry):
                 content = type, child.text
             else:
                 content = type, tostring(child)
+        elif child.tag.startswith(DC_NS_PREFIX):
+            dcore.append((child.tag[DC_NS_PREFIX_LEN:], child.text, child.attrib))
         else:
             others.append(child)
 
@@ -91,6 +98,7 @@ def parse_entry(entry):
         'author' : author,
         'title' : title,
         'links' : links,
+        'dcore' : dcore,
         'content' : content,
         'others' : others,
         'updated' : updated
