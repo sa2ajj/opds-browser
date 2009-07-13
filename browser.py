@@ -53,9 +53,14 @@ class OPDSGeneric(QtGui.QListWidgetItem):
         self.setText(self._entry['title'][1])
 
     def html(self):
-        result = [ '<table>' ]
+        result = [
+            '<h1>%s</h1>' % escape(self._entry['title'][1]),
+            '<small>Last updated: %s</small>' % self._entry['updated']
+        ]
 
-        for key in sorted(self._entry.keys()):
+        result.append('<table>')
+
+        for key in [key for key in sorted(self._entry.keys()) if key not in [ 'title', 'updated' ]]:
             result.append('<tr><td>%s</td><td>%s</td>' % (escape(key), escape(pformat(self._entry[key]))))
 
         result.append('</table>')
