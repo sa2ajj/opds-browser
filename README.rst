@@ -9,6 +9,8 @@ This application is just an experiment with:
     * `ElementTree`_
     * `OPDS`_
 
+(Small link to myself: `OPDS`_ is based on `Atom`_.)
+
 License
 -------
 
@@ -28,6 +30,8 @@ CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations under the License.
 
 .. _OPDS: http://code.google.com/p/openpub/wiki/OPDS
+
+.. _Atom: http://www.ietf.org/rfc/rfc4287.txt
 
 .. _PyQt: http://www.riverbankcomputing.co.uk/news
 
