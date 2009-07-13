@@ -114,13 +114,13 @@ def parse_entry(entry):
             if content_type == 'text':
                 content = content_type, child.text
             elif content_type == 'xhtml':
-                content = content_type, tostring(remove_qualifaction(child[0], XHTML_NS_PREFIX), 'utf-8')
+                content = content_type, unicode(tostring(remove_qualifaction(child[0], XHTML_NS_PREFIX), 'utf-8'), 'utf-8')
             else:
-                content = content_type, tostring(child, 'utf-8')
+                content = content_type, unicode(tostring(child, 'utf-8'), 'utf-8')
         elif child.tag.startswith(DC_NS_PREFIX):
             dcore.append((child.tag[DC_NS_PREFIX_LEN:], child.text, child.attrib))
         else:
-            others.append(tostring(remove_qualifaction(child, ATOM_NS_PREFIX), 'utf-8'))
+            others.append(unicode(tostring(remove_qualifaction(child, ATOM_NS_PREFIX), 'utf-8'), 'utf-8'))
 
     return {
         'author' : author,
