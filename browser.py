@@ -67,11 +67,11 @@ class OPDSGeneric(QtGui.QListWidgetItem):
 
         return ''.join(result)
 
-class OPDSCatalog(OPDSGeneric):
+class OPDSCatalogue(OPDSGeneric):
     ''' ... '''
 
     def __init__(self, entry):
-        super(OPDSCatalog, self).__init__(entry, QtGui.QListWidgetItem.Type+1)
+        super(OPDSCatalogue, self).__init__(entry, QtGui.QListWidgetItem.Type+1)
 
 class OPDSEntry(OPDSGeneric):
     ''' ... '''
@@ -79,7 +79,7 @@ class OPDSEntry(OPDSGeneric):
     def __init__(self, entry):
         super(OPDSEntry, self).__init__(entry, QtGui.QListWidgetItem.Type+2)
 
-def is_catalog(links):
+def is_catalogue(links):
     for link in links:
         if link['type'] == 'application/atom+xml' and 'rel' not in link:
             return True
@@ -92,10 +92,10 @@ determines the entry type (catalog/book) and creates an instance of the
 corresponding QListWidgetItem derivative
 
 :param entry: list of { 'type' : <type>, 'href' : <href>, ... }
-:rtype: OPDSGeneric/OPDSCatalog/OPDSEntry
+:rtype: OPDSGeneric/OPDSCatalogue/OPDSEntry
 '''
-    if is_catalog(entry['links']):
-        result = OPDSCatalog(entry)
+    if is_catalogue(entry['links']):
+        result = OPDSCatalogue(entry)
     else:
         result = OPDSEntry(entry)
 
