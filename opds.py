@@ -77,6 +77,17 @@ def parse_author(author):
 
     return result
 
+def remove_qualifaction(root, namespace):
+    ''' removes the specified namespace '''
+
+    namespace_len = len(namespace)
+
+    for elem in root.getiterator():
+        if elem.tag.startswith(namespace):
+            elem.tag = elem.tag[namespace_len:]
+
+    return elem
+
 def parse_entry(entry):
     ''' parses the entry '''
 
@@ -103,19 +114,13 @@ def parse_entry(entry):
             if content_type == 'text':
                 content = content_type, child.text
             elif content_type == 'xhtml':
-                content = child[0]
-
-                for elem in content.getiterator():
-                    if elem.tag.startswith(XHTML_NS_PREFIX):
-                        elem.tag = elem.tag[XHTML_NS_PREFIX_LEN:]
-
-                content = content_type, tostring(content, 'utf-8')
+                content = content_type, tostring(remove_qualifaction(child[0], XHTML_NS_PREFIX), 'utf-8')
             else:
-                content = content_type, tostring(child)
+                content = content_type, tostring(child, 'utf-8')
         elif child.tag.startswith(DC_NS_PREFIX):
             dcore.append((child.tag[DC_NS_PREFIX_LEN:], child.text, child.attrib))
         else:
-            others.append(child)
+            others.append(tostring(remove_qualifaction(child, ATOM_NS_PREFIX), 'utf-8'))
 
     return {
         'author' : author,
