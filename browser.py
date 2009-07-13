@@ -41,13 +41,16 @@ def get_icon(name, data):
 class OPDSGeneric(QtGui.QListWidgetItem):
     ''' ... '''
 
-    def __init__(self, entry):
-        super(OPDSGeneric, self).__init__(None, QtGui.QListWidgetItem.Type)
+    def __init__(self, entry, type=QtGui.QListWidgetItem.Type):
+        super(OPDSGeneric, self).__init__(None, type)
 
         self._entry = entry
 
+        self.init_item()
+
+    def init_item(self):
         self.setIcon(get_icon('default.png', open('images/default.png', 'rb').read()))
-        self.setText(entry['title'][1])
+        self.setText(self._entry['title'][1])
 
     def html(self):
         result = [ '<table>' ]
@@ -59,55 +62,37 @@ class OPDSGeneric(QtGui.QListWidgetItem):
 
         return ''.join(result)
 
-class OPDSCatalog(QtGui.QListWidgetItem):
-    ''' ... '''
-
-    def __init__(self):
-        super(OPDSEntry, self).__init__(type=QtGui.QListWidgetItem.Type+1)
-
-class OPDSEntry(QtGui.QListWidgetItem):
+class OPDSCatalog(OPDSGeneric):
     ''' ... '''
 
     def __init__(self, entry):
-        super(OPDSEntry, self).__init__(None, QtGui.QListWidgetItem.Type+2)
+        super(OPDSCatalog, self).__init__(entry, QtGui.QListWidgetItem.Type+1)
 
-def guess_type(links):
-    catalog = False
-    book = False
+class OPDSEntry(OPDSGeneric):
+    ''' ... '''
 
+    def __init__(self, entry):
+        super(OPDSEntry, self).__init__(entry, QtGui.QListWidgetItem.Type+2)
+
+def is_catalog(links):
     for link in links:
         if link['type'] == 'application/atom+xml' and 'rel' not in link:
-            catalog = True
-        elif link['type'] == 'application/epub+zip':
-            book = True
+            return True
 
-    if 0:
-        print 'guess_type'
-        print ' links:', pformat(links)
-        print ' c & b:', catalog, book
-
-    if catalog and not book:
-        result = 'Catalog'
-    elif book and not catalog:
-        result = 'Book'
-    else:
-        result = 'Oops'
-
-    return result
+    return False
 
 def get_item(entry):
-    entry_type = guess_type(entry['links'])
-    print 'Type:', entry_type
+    '''\
+determines the entry type (catalog/book) and creates an instance of the
+corresponding QListWidgetItem derivative
 
-    if 0:
-        if entry_type == 'Catalog':
-            result = OPDSCatalog(entry)
-        elif entry_type == 'Book':
-            result = OPDSEntry(entry)
-        else:
-            result = None
+:param entry: list of { 'type' : <type>, 'href' : <href>, ... }
+:rtype: OPDSGeneric/OPDSCatalog/OPDSEntry
+'''
+    if is_catalog(entry['links']):
+        result = OPDSCatalog(entry)
     else:
-        result = OPDSGeneric(entry)
+        result = OPDSEntry(entry)
 
     return result
 
