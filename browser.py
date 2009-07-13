@@ -116,8 +116,13 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._items.currentItemChanged.connect(self.update_preview)
         self._items.itemActivated.connect(self.load_item)
 
-        self._text_viewer = QtGui.QTextEdit()
-        self._text_viewer.setReadOnly(True)
+        self._text_viewer = QtGui.QTextBrowser()
+        self._text_viewer.setOpenExternalLinks(False)
+        self._text_viewer.setOpenLinks(False)
+        self._text_viewer.anchorClicked.connect(self.open_link)
+
+    def open_link(self, link):
+        print 'open_link', link
 
     def load_url(self, url):
         data = load(url)
