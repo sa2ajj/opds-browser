@@ -35,6 +35,10 @@ DC_NS = 'http://purl.org/dc/elements/1.1/'
 DC_NS_PREFIX = '{%s}' % DC_NS
 DC_NS_PREFIX_LEN = len(DC_NS_PREFIX)
 
+XHTML_NS = 'http://www.w3.org/1999/xhtml'
+XHTML_NS_PREFIX = '{%s}' % XHTML_NS
+XHTML_NS_PREFIX_LEN = len(XHTML_NS_PREFIX)
+
 AUTHOR_ELEM = '{%s}author' % ATOM_NS
 TITLE_ELEM = '{%s}title' % ATOM_NS
 LINK_ELEM = '{%s}link' % ATOM_NS
@@ -98,6 +102,14 @@ def parse_entry(entry):
 
             if content_type == 'text':
                 content = content_type, child.text
+            elif content_type == 'xhtml':
+                content = child[0]
+
+                for elem in content.getiterator():
+                    if elem.tag.startswith(XHTML_NS_PREFIX):
+                        elem.tag = elem.tag[XHTML_NS_PREFIX_LEN:]
+
+                content = content_type, tostring(content, 'utf-8')
             else:
                 content = content_type, tostring(child)
         elif child.tag.startswith(DC_NS_PREFIX):
