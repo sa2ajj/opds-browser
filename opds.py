@@ -86,7 +86,7 @@ def remove_qualifaction(root, namespace):
         if elem.tag.startswith(namespace):
             elem.tag = elem.tag[namespace_len:]
 
-    return elem
+    return root
 
 def parse_entry(entry):
     ''' parses the entry '''
