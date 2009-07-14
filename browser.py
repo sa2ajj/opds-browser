@@ -229,6 +229,8 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._current_url = None
         self._history = []
 
+        self._cache = {}
+
         self._create_widgets()
 
         splitter = QtGui.QSplitter()
@@ -275,10 +277,19 @@ class OPDSBrowser(QtGui.QMainWindow):
         ''' opens the link in an external browser '''
 
         webbrowser.open(link.toString())
+
+    def _cached_data(self, url):
+        ''' a simple cache for downloaded data '''
+
+        if url not in self._cache:
+            self._cache[url] = load(url)
+
+        return self._cache[url]
+
     def _load_url(self, url):
         self._current_url = url
 
-        data = load(url)
+        data = self._cached_data(url)
 
         if data['title'][0] == 'text':
             self.setWindowTitle(data['title'][1])
