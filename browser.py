@@ -72,11 +72,31 @@ class OPDSGeneric(QtGui.QListWidgetItem):
 
         return ''.join(result)
 
+    def activate(self, _):
+        ''' do nothing! '''
+
 class OPDSCatalogue(OPDSGeneric):
     ''' ... '''
 
     def __init__(self, entry):
         super(OPDSCatalogue, self).__init__(entry, QtGui.QListWidgetItem.Type+1)
+
+        links = [ link for link in entry['links'] if is_catalogue_link(link) ]
+
+        assert len(links) > 0, 'Oopsy-oops.'
+
+        if len(links) > 1:
+            print >> sys.stderr, 'Got more than one catalogue link:'
+
+            for link in links:
+                print >> sys.stderr, ' ', pformat(link)
+
+        self._link = links[0]['href']
+
+    def activate(self, browser):
+        ''' load catalogue link in the main browser '''
+
+        browser.load_url(self._link)
 
 class OPDSEntry(OPDSGeneric):
     ''' ... '''
@@ -168,17 +188,23 @@ must be used
 
         return ''.join(result)
 
+    def activate(self, _):
+        ''' not implemented '''
+
+        print 'Not implemented!'
+
+def is_catalogue_link(link):
+    ''' check whether the specified link points to a catalogue '''
+
+    return link['type'] == 'application/atom+xml' and 'rel' not in link
+
 def is_catalogue(links):
     ''' check whether the specified set of links is for a catalogue
 
 (unfortunately, currently there's no better way to distinguish between
 catalogue & book entries
 '''
-    for link in links:
-        if link['type'] == 'application/atom+xml' and 'rel' not in link:
-            return True
-
-    return False
+    return len([ link for link in links if is_catalogue_link(link) ]) > 0
 
 def get_item(entry):
     '''\
@@ -196,8 +222,12 @@ corresponding QListWidgetItem derivative
     return result
 
 class OPDSBrowser(QtGui.QMainWindow):
-    def __init__(self):
+    def __init__(self, home_url):
         super(OPDSBrowser, self).__init__()
+
+        self._home_url = home_url
+        self._current_url = None
+        self._history = []
 
         self._create_widgets()
 
@@ -208,6 +238,8 @@ class OPDSBrowser(QtGui.QMainWindow):
 
         self.setCentralWidget(splitter)
         self.setWindowTitle('OPDS Browser')
+
+        self.go_home()
 
     def _create_widgets(self):
         self._items = QtGui.QListWidget()
@@ -243,8 +275,9 @@ class OPDSBrowser(QtGui.QMainWindow):
         ''' opens the link in an external browser '''
 
         webbrowser.open(link.toString())
+    def _load_url(self, url):
+        self._current_url = url
 
-    def load_url(self, url):
         data = load(url)
 
         if data['title'][0] == 'text':
@@ -259,6 +292,12 @@ class OPDSBrowser(QtGui.QMainWindow):
 
         self._items.setCurrentRow(0)
 
+    def load_url(self, url):
+        if self._current_url is not None:
+            self._history.append(self._current_url)
+
+        self._load_url(url)
+
     def update_preview(self, current, previous):
         if current is not None:
             assert isinstance(current, OPDSGeneric), 'something went really wrong'
@@ -266,13 +305,23 @@ class OPDSBrowser(QtGui.QMainWindow):
             self._text_viewer.setHtml(current.html())
 
     def load_item(self, item):
-        print 'load_item', item
+        ''' activate the double-clicked item '''
+
+        item.activate(self)
 
     def go_home(self):
-        print 'home'
+        ''' do go home! :) '''
+
+        self._history = []  # clear the history
+        self._load_url(self._home_url)
 
     def go_back(self):
-        print 'back'
+        ''' 'back' implementation '''
+
+        if len(self._history) > 0:
+            self._load_url(self._history.pop())
+        else:
+            self._back.setDisabled(True)
 
     def add_item(self):
         print 'add'
@@ -280,9 +329,7 @@ class OPDSBrowser(QtGui.QMainWindow):
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
-    browser = OPDSBrowser()
-    # browser.load_url('http://www.feedbooks.com/catalog.atom')
-    browser.load_url('http://www.feedbooks.com/userbooks/downloads.atom?added=month')
+    browser = OPDSBrowser('http://www.feedbooks.com/catalog.atom')
     browser.show()
 
     sys.exit(app.exec_())
