@@ -215,6 +215,25 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._text_viewer.setOpenLinks(False)
         self._text_viewer.anchorClicked.connect(self.open_link)
 
+        # Among these three only _back is going to be used (when @ home,
+        # there's no way back :))
+        self._home = QtGui.QAction(QtGui.QIcon('images/gohome.png'), 'Home', self)
+        self._home.triggered.connect(self.go_home)
+
+        self._back = QtGui.QAction(QtGui.QIcon('images/previous.png'), 'Back', self)
+        self._back.triggered.connect(self.go_back)
+
+        self._add = QtGui.QAction(QtGui.QIcon('images/add.png'), 'Up', self)
+        self._add.triggered.connect(self.add_item)
+
+        # We do not really need this object in future, so not storing
+        toolbar = self.addToolBar('main toolbar')
+
+        toolbar.addAction(self._home)
+        toolbar.addAction(self._back)
+        toolbar.addSeparator()
+        toolbar.addAction(self._add)
+
     def open_link(self, link):
         ''' opens the link in an external browser '''
 
@@ -243,6 +262,15 @@ class OPDSBrowser(QtGui.QMainWindow):
 
     def load_item(self, item):
         print 'load_item', item
+
+    def go_home(self):
+        print 'home'
+
+    def go_back(self):
+        print 'back'
+
+    def add_item(self):
+        print 'add'
 
 if __name__ == '__main__':
     import sys
