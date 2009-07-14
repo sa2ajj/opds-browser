@@ -1,9 +1,12 @@
-.. contents::
+Simple browser for OPDS catalogues
+==================================
+
+.. contents:: Table of Contents
 
 Introduction
 ------------
 
-This is a simple browser for `OPDS`_ catalogs.
+This is a simple browser for `OPDS`_ catalogues.
 
 This application is just an experiment with:
 
