@@ -286,3 +286,5 @@ if __name__ == '__main__':
     browser.show()
 
     sys.exit(app.exec_())
+
+# vim:ts=4:sw=4:et
