@@ -98,7 +98,8 @@ must be used
 
         result.append('<h2>Author</h2>')
 
-        result.append('''\
+        if self._entry['author']:
+            result.append('''\
 <dl>
     <dt>Name</dt>
     <dd>%(name)s</dd>
@@ -107,6 +108,8 @@ must be used
     <dt>URL</dt>
     <dd>%(url)s</dt>
 </dl>''' % self._entry['author'])
+        else:
+            result.append('<p>Author is unknown</p>')
 
         content_type, content_body = self._entry['content'][0], self._entry['content'][1]
 
