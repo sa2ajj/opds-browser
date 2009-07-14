@@ -21,6 +21,7 @@ A simple OPDS browser
 (work in progress)\
 '''
 
+from copy import copy
 import webbrowser
 
 from PyQt4 import QtCore, QtGui
@@ -79,7 +80,88 @@ class OPDSEntry(OPDSGeneric):
     ''' ... '''
 
     def __init__(self, entry):
+        ''' constructor '''
         super(OPDSEntry, self).__init__(entry, QtGui.QListWidgetItem.Type+2)
+
+    def html(self):
+        ''' prepare HTML for showing in the right pane
+
+FIXME: the code is actually not nice at all.  Some sort of templating engine
+must be used
+'''
+        result = [
+            '<h1>%s</h1>' % escape(self._entry['title'][1]),
+            '<small>Last updated: %s</small>' % self._entry['updated']
+        ]
+
+        result.append('<h2>Author</h2>')
+
+        result.append('''\
+<dl>
+    <dt>Name</dt>
+    <dd>%(name)s</dd>
+    <dt>e-mail</dt>
+    <dd>%(email)s</dd>
+    <dt>URL</dt>
+    <dd>%(url)s</dt>
+</dl>''' % self._entry['author'])
+
+        content_type, content_body = self._entry['content'][0], self._entry['content'][1]
+
+        if content_type and content_body:
+            result.append('<h2>Content</h2>')
+
+            if content_type == 'text':
+                result.append('<p>%s</p>' % escape(content_body))
+            elif content_type == 'xhtml':
+                result.append(content_body)
+            else:
+                result.append('<p><b>Unknown type</b>: %s</p>' % content_type)
+                result.append('<p>%s</p>' % escape(content_body))
+
+        if self._entry['dcore']:
+            result.append('<h2>Dublin Core</h2>')
+
+            result.append('<dl>')
+
+            for tag, value, attrib in self._entry['dcore']:
+                result.append('''\
+<dt>%s (%s)</dt>
+<dd>%s</dd>''' % (tag, pformat(attrib), value))
+
+            result.append('</dl>')
+
+        if self._entry['links']:
+            result.append('<h2>Links</h2>')
+
+            result.append('<ul>')
+
+            for link in self._entry['links']:
+                tempo = copy(link)
+
+                # +++ Hack +++
+
+                if 'title' not in tempo:
+                    tempo['title'] = tempo['href']
+
+                    if 'rel' in tempo:
+                        tempo['rel'] = 'rel="%s"' % tempo['rel']
+                    else:
+                        tempo['rel'] = ''
+
+                # --- Hack ---
+
+                result.append('<li><a href="%(href)s" %(rel)s type="%(type)s">%(title)s</a></li>' % tempo)
+
+            result.append('</ul>')
+
+        if self._entry['others']:
+            result.append('<h2>Other elements</h2>')
+
+            for item in self._entry['others']:
+                result.append('<p>%s</p>' % escape(item))
+
+        return ''.join(result)
 
 def is_catalogue(links):
     ''' check whether the specified set of links is for a catalogue
@@ -168,8 +250,8 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
     browser = OPDSBrowser()
-    browser.load_url('http://www.feedbooks.com/catalog.atom')
-    # browser.load_url('http://www.feedbooks.com/userbooks/downloads.atom?added=month')
+    # browser.load_url('http://www.feedbooks.com/catalog.atom')
+    browser.load_url('http://www.feedbooks.com/userbooks/downloads.atom?added=month')
     browser.show()
 
     sys.exit(app.exec_())
