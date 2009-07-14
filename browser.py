@@ -21,6 +21,8 @@ A simple OPDS browser
 (work in progress)\
 '''
 
+import webbrowser
+
 from PyQt4 import QtCore, QtGui
 
 from cgi import escape
@@ -132,7 +134,9 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._text_viewer.anchorClicked.connect(self.open_link)
 
     def open_link(self, link):
-        print 'open_link', link
+        ''' opens the link in an external browser '''
+
+        webbrowser.open(link.toString())
 
     def load_url(self, url):
         data = load(url)
