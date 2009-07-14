@@ -11,6 +11,20 @@ This application is just an experiment with:
 
 (Small link to myself: `OPDS`_ is based on `Atom`_.)
 
+Installation
+------------
+
+You should be able to obtain the latest version of the code in a git repository at `gitorious`_.
+
+This is a work in progress, so there are not real installation instructions yet, sorry.
+
+Pre-requisites:
+
+    * python (>= 2.5)
+    * PyQt 4.x
+
+.. _gitorious: http://gitorious.org/opds-browser
+
 Credits
 -------
 
