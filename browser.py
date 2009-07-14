@@ -21,6 +21,8 @@ A simple OPDS browser
 (work in progress)\
 '''
 
+import sys
+
 from copy import copy
 import webbrowser
 
@@ -273,8 +275,6 @@ class OPDSBrowser(QtGui.QMainWindow):
         print 'add'
 
 if __name__ == '__main__':
-    import sys
-
     app = QtGui.QApplication(sys.argv)
 
     browser = OPDSBrowser()
