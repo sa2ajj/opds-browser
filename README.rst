@@ -11,6 +11,11 @@ This application is just an experiment with:
 
 (Small link to myself: `OPDS`_ is based on `Atom`_.)
 
+Credits
+-------
+
+In the application were used `black and white`_ icons by Lothar Grimme.
+
 License
 -------
 
@@ -36,3 +41,5 @@ specific language governing permissions and limitations under the License.
 .. _PyQt: http://www.riverbankcomputing.co.uk/news
 
 .. _ElementTree: http://effbot.org/zone/element-index.htm
+
+.. _black and white: http://www.carpicon.com/index.php?option=com_content&task=view&id=6&Itemid=26
