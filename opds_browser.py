@@ -44,9 +44,20 @@ def data_to_icon(data):
 
     return QtGui.QIcon(pixmap)
 
+_cached_icons = {}
+
 def get_icon(name, data):
-    # do not cache for now
-    return data_to_icon(data)
+    '''
+get icon for the specified name
+
+Performs basic caching to speed things up
+'''
+    global _cached_icons
+
+    if name not in _cached_icons:
+        _cached_icons[name] = data_to_icon(data)
+
+    return _cached_icons[name]
 
 class OPDSGeneric(QtGui.QListWidgetItem):
     ''' ... '''
