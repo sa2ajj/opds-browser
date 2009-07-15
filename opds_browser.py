@@ -26,7 +26,7 @@ import sys
 from copy import copy
 import webbrowser
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from cgi import escape
 from pprint import pformat
@@ -34,6 +34,11 @@ from pprint import pformat
 from opds import load
 
 def data_to_icon(data):
+    ''' a simple converter from set of bytes to a Pixmap
+
+:param data: bytes
+:rtype: QPixmap
+'''
     pixmap = QtGui.QPixmap()
     pixmap.loadFromData(data)
 
@@ -138,6 +143,8 @@ must be used
 
             if content_type == 'text':
                 result.append('<p>%s</p>' % escape(content_body))
+            elif content_type == 'html':        # MSS: if I understand correctly, spec requires proper escaping to be in place
+                result.append(content_body)
             elif content_type == 'xhtml':
                 result.append(content_body)
             else:
@@ -246,6 +253,7 @@ class OPDSBrowser(QtGui.QMainWindow):
         self.go_home()
 
     def _create_widgets(self):
+        ''' create all necessary widgets '''
         self._items = QtGui.QListWidget()
 
         self._items.currentItemChanged.connect(self.update_preview)
@@ -289,6 +297,7 @@ class OPDSBrowser(QtGui.QMainWindow):
         return self._cache[url]
 
     def _load_url(self, url):
+        ''' loads the provided URL '''
         self._current_url = url
 
         data = self._cached_data(url)
@@ -306,6 +315,11 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._items.setCurrentRow(0)
 
     def load_url(self, url):
+        '''\
+loads the provided URL
+
+This method stores the currently viewed URL in the `_history` and then calls `_load_url`.
+'''
         if self._current_url is not None:
             self._history.append(self._current_url)
 
@@ -339,12 +353,16 @@ class OPDSBrowser(QtGui.QMainWindow):
     def add_item(self):
         print 'add'
 
-if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+def main(args):
+    ''' the actual worker '''
+    app = QtGui.QApplication(args)
 
     browser = OPDSBrowser('http://www.feedbooks.com/catalog.atom')
     browser.show()
 
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main(sys.argv)
 
 # vim:ts=4:sw=4:et
