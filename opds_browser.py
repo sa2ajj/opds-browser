@@ -243,8 +243,6 @@ class OPDSBrowser(QtGui.QMainWindow):
     def __init__(self, home_url):
         super(OPDSBrowser, self).__init__()
 
-        self.resize(800, 600)
-
         self._home_url = home_url
         self._current_url = None
         self._history = []
@@ -260,6 +258,7 @@ class OPDSBrowser(QtGui.QMainWindow):
 
         self.setCentralWidget(splitter)
         self.setWindowTitle('OPDS Browser')
+        self.resize(800, 600)
 
         self.go_home()
 
