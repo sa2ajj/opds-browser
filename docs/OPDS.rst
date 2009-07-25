@@ -167,16 +167,16 @@ Searching
 If a catalog XML file has a link with the rel search in its header, Reading Systems should provide a
 search affordance (such an iconic magnifying glass button). The user will then be able to enter
 search terms into the search box that pops up, and it will be sent to the server by replacing the
-instance of the string `{searchTerms}` in the link's href attribute.
+instance of the string ``{searchTerms}`` in the link's href attribute.
 
 For example, if you have the following link::
 
     <link rel="search" title="Search Catalog" type="application/atom+xml"
         href="http://www.billybobsbooks.com/search.php?q={searchTerms}"/>
 
-And if the user enters `The Great Gatsby` into the search field and submits, a compatible Reading
+And if the user enters ``The Great Gatsby`` into the search field and submits, a compatible Reading
 System will fetch the next catalog by going to the URL
-`http://www.billybobsbooks.com/search.php?q=The+Great+Gatsby`.
+``http://www.billybobsbooks.com/search.php?q=The+Great+Gatsby``.
 
 Reading Systems are required to not put any constraints on the search terms you enter or the meaning
 of the search. For example, if your top-level catalog has an "Authors" sub-catalog, you could have
