@@ -22,6 +22,7 @@ import sys
 assert sys.version_info[0] > 2 or (sys.version_info[0] == 2 and sys.version_info[1] >= 5), 'Sorry, you need a more recent version of python'
 
 from urllib2 import urlopen, Request
+from urlparse import urljoin
 
 from xml.etree.cElementTree import parse, tostring
 
@@ -163,13 +164,19 @@ def parse_catalog(catalog):
         'updated' : updated
     }
 
-def load(url):
+def load(url, normalize_links=False):
     ''' open the specified url, parse the data '''
 
     request = Request(url)
     request.add_header('User-Agent', 'OPDS Browser')
 
-    return parse_catalog(parse(urlopen(request)).getroot())
+    root = parse(urlopen(request)).getroot()
+
+    if normalize_links:
+        for child in root.getiterator(LINK_ELEM):
+            child.attrib['href'] = urljoin(url, child.attrib['href'])
+
+    return parse_catalog(root)
 
 def main(url):
     ''' pretty much test code '''
