@@ -48,13 +48,11 @@ International Digital Publishing Forum (IDPF).
 The Catalog Format: Atom XML
 ----------------------------
 
-For catalogs, OPDS extends the standard Atom format and associated HTTP-based APIs (`RFC 4287 – "The Atom Syndication Format"`_).
+For catalogs, OPDS extends the standard Atom format and associated HTTP-based APIs (:RFC:`4287` – "The Atom Syndication Format").
 
 .. note:: While compatible with Atom, OPDS catalogs are not "news feeds" and it is not expected that
     they will be usefully consumable via a generic news reader program. The use of Atom by OPDS is
     similar to other uses for access to cloud-based information, such as Google Data APIs.
-
-.. _RFC 4287 – "The Atom Syndication Format": http://tools.ietf.org/html/rfc4287
 
 The catalog is defined as a series of links. OPDS-compatible Reading Systems must support two MIME
 types in such links: `application/atom+xml` (which specifies that the link goes to another
@@ -415,12 +413,10 @@ Atom and HTTP, compatible with the Atom specifications.  These include:
 Data URL support in thumbnail image definitions A few OPDS features represent extensions to Atom, these include:
 
   * Searching: the OpenSearch-based URL template syntax is not defined by the Atom specifications.
-    As "{" and "}" are designated as "unsafe" characters which must be encoded in URLs (per `RFC 1738`_),
+    As "{" and "}" are designated as "unsafe" characters which must be encoded in URLs (per :RFC:`1738`),
     Atom-conforming processing software may not successfully process search links in catalogs.
   * Icons: the use of new link "rel" attribute types is a conformant extension to the base Atom
     specification and such links are required to be ignored by Atom software that does not support
     them.
-
-.. _RFC 1738: http://www.freesoft.org/CIE/RFC/1738/4.htm
 
 .. vim:tw=100:ts=4:sw=4:et
