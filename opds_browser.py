@@ -339,7 +339,7 @@ class OPDSBrowser(QtGui.QMainWindow):
         ''' a simple cache for downloaded data '''
 
         if url not in self._cache:
-            self._cache[url] = load(url)
+            self._cache[url] = load(url, True)
 
         return self._cache[url]
 
