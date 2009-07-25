@@ -27,6 +27,8 @@ from xml.etree.cElementTree import parse, tostring
 
 from pprint import pformat
 
+__all__ = [ 'load' ]
+
 ATOM_NS = 'http://www.w3.org/2005/Atom'
 ATOM_NS_PREFIX = '{%s}' % ATOM_NS
 ATOM_NS_PREFIX_LEN = len(ATOM_NS_PREFIX)
