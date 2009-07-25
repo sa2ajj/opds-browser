@@ -26,9 +26,11 @@ import sys
 from copy import copy
 import webbrowser
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from cgi import escape
+from urllib import quote_plus
+
 from pprint import pformat
 
 from opds import load
@@ -285,6 +287,14 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._add = QtGui.QAction(QtGui.QIcon('images/add.png'), 'Up', self)
         self._add.triggered.connect(self.add_item)
 
+        self._search_what = QtGui.QComboBox()
+
+        self._search = QtGui.QLineEdit(self)
+        self._search.setSizePolicy(QtGui.QSizePolicy.Expanding, self._search.sizePolicy().verticalPolicy())
+        self._search.returnPressed.connect(self.do_search)
+
+        self._disable_search()
+
         # We do not really need this object in future, so not storing
         toolbar = self.addToolBar('main toolbar')
 
@@ -292,6 +302,33 @@ class OPDSBrowser(QtGui.QMainWindow):
         toolbar.addAction(self._back)
         toolbar.addSeparator()
         toolbar.addAction(self._add)
+
+        toolbar = self.addToolBar('search toolbar')
+
+        toolbar.addWidget(self._search_what)
+        toolbar.addWidget(self._search)
+
+    def _disable_search(self):
+        ''' disable search functionality '''
+
+        self._search_what.clear()
+        self._search_what.addItem('<No search>')
+        self._search_what.setDisabled(True)
+
+        self._search.setDisabled(True)
+
+    def _add_search_item(self, name, link):
+        ''' adds a search item to the combobox '''
+
+        # TODO: should I validate the link first (must have {searchTerms})?
+
+        if not self._search_what.isEnabled():
+            self._search_what.clear()
+            self._search_what.setEnabled(True)
+
+            self._search.setEnabled(True)
+
+        self._search_what.addItem(name, QtCore.QVariant(link))
 
     def open_link(self, link):
         ''' opens the link in an external browser '''
@@ -323,6 +360,11 @@ class OPDSBrowser(QtGui.QMainWindow):
             self._items.addItem(get_item(entry))
 
         self._items.setCurrentRow(0)
+
+        self._disable_search()
+
+        for link in [ link for link in data['links'] if link['type'] == 'application/atom+xml' and link.get('rel') == 'search' ]:
+            self._add_search_item(link.get('title', 'Search'), link['href'])
 
     def load_url(self, url):
         '''\
@@ -362,6 +404,22 @@ This method stores the currently viewed URL in the `_history` and then calls `_l
 
     def add_item(self):
         print 'add'
+
+    def do_search(self):
+        ''' perform the search '''
+
+        qv_link = self._search_what.itemData(self._search_what.currentIndex())
+
+        if qv_link.isValid() and qv_link.canConvert(QtCore.QVariant.String):
+            link = str(qv_link.toString())
+
+            terms = unicode(self._search.text()).encode('utf-8')
+
+            self._search.selectAll()
+
+            self.load_url(link.replace('{searchTerms}', quote_plus(terms)))
+        else:
+            pass    # should I print something or show a dialog here?
 
 def main(args):
     ''' the actual worker '''
