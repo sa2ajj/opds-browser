@@ -170,9 +170,14 @@ must be used
             result.append('<dl>')
 
             for tag, value, attrib in self._entry['dcore']:
-                result.append('''\
+                if attrib:
+                    result.append('''\
 <dt>%s (%s)</dt>
 <dd>%s</dd>''' % (tag, pformat(attrib), value))
+                else:
+                    result.append('''\
+<dt>%s</dt>
+<dd>%s</dd>''' % (tag, value))
 
             result.append('</dl>')
 
