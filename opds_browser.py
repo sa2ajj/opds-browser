@@ -49,7 +49,7 @@ def data_to_icon(data):
 
 _cached_icons = {}
 
-def get_icon(name, data):
+def get_icon(name, filename):
     """
     get icon for the specified name
 
@@ -58,7 +58,8 @@ def get_icon(name, data):
     global _cached_icons
 
     if name not in _cached_icons:
-        _cached_icons[name] = data_to_icon(data)
+        with open(filename, 'rb') as icon:
+            _cached_icons[name] = data_to_icon(icon.read())
 
     return _cached_icons[name]
 
@@ -73,7 +74,7 @@ class OPDSGeneric(QtGui.QListWidgetItem):
         self.init_item()
 
     def init_item(self):
-        self.setIcon(get_icon('default.png', open('images/default.png', 'rb').read()))
+        self.setIcon(get_icon('default.png', 'images/default.png'))
         self.setText(self._entry['title'][1])
 
     def html(self):
