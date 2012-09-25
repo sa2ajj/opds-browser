@@ -1,6 +1,6 @@
 #! /usr/bin/python
 #
-#  Copyright 2009 Mikhail Sobolev
+#  Copyright (C) 2009-2012 Mikhail Sobolev
 #  Contact: Mikhail Sobolev <mss@mawhrin.net>
 #
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not

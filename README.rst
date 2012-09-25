@@ -38,7 +38,7 @@ In the application were used `black and white`_ icons by Lothar Grimme.
 License
 -------
 
-Copyright 2009 Mikhail Sobolev 
+Copyright (C) 2009-2012 Mikhail Sobolev
 
 Contact: Mikhail Sobolev <mss@mawhrin.net>
 
