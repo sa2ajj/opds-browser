@@ -15,11 +15,11 @@
 #  License for the specific language governing permissions and limitations
 #  under the License.
 
-'''\
+"""
 A simple OPDS browser
 
-(work in progress)\
-'''
+(work in progress)
+"""
 
 import sys
 
@@ -36,11 +36,12 @@ from pprint import pformat
 from opds import load
 
 def data_to_icon(data):
-    ''' a simple converter from set of bytes to a Pixmap
+    """
+    a simple converter from set of bytes to a Pixmap
 
-:param data: bytes
-:rtype: QPixmap
-'''
+    :param data: bytes
+    :rtype: QPixmap
+    """
     pixmap = QtGui.QPixmap()
     pixmap.loadFromData(data)
 
@@ -49,11 +50,11 @@ def data_to_icon(data):
 _cached_icons = {}
 
 def get_icon(name, data):
-    '''
-get icon for the specified name
+    """
+    get icon for the specified name
 
-Performs basic caching to speed things up
-'''
+    Performs basic caching to speed things up
+    """
     global _cached_icons
 
     if name not in _cached_icons:
@@ -62,7 +63,7 @@ Performs basic caching to speed things up
     return _cached_icons[name]
 
 class OPDSGeneric(QtGui.QListWidgetItem):
-    ''' ... '''
+    """ ... """
 
     def __init__(self, entry, type=QtGui.QListWidgetItem.Type):
         super(OPDSGeneric, self).__init__(None, type)
@@ -91,10 +92,10 @@ class OPDSGeneric(QtGui.QListWidgetItem):
         return ''.join(result)
 
     def activate(self, _):
-        ''' do nothing! '''
+        """do nothing!"""
 
 class OPDSCatalogue(OPDSGeneric):
-    ''' ... '''
+    """..."""
 
     def __init__(self, entry):
         super(OPDSCatalogue, self).__init__(entry, QtGui.QListWidgetItem.Type+1)
@@ -112,23 +113,22 @@ class OPDSCatalogue(OPDSGeneric):
         self._link = links[0]['href']
 
     def activate(self, browser):
-        ''' load catalogue link in the main browser '''
+        """load catalogue link in the main browser"""
 
         browser.load_url(self._link)
 
 class OPDSEntry(OPDSGeneric):
-    ''' ... '''
+    """..."""
 
     def __init__(self, entry):
-        ''' constructor '''
         super(OPDSEntry, self).__init__(entry, QtGui.QListWidgetItem.Type+2)
 
     def html(self):
-        ''' prepare HTML for showing in the right pane
+        """prepare HTML for showing in the right pane
 
-FIXME: the code is actually not nice at all.  Some sort of templating engine
-must be used
-'''
+        FIXME: the code is actually not nice at all.  Some sort of templating
+        engine must be used
+        """
         result = [
             '<h1>%s</h1>' % escape(self._entry['title'][1]),
             '<small>Last updated: %s</small>' % self._entry['updated']
@@ -214,31 +214,31 @@ must be used
         return ''.join(result)
 
     def activate(self, _):
-        ''' not implemented '''
+        """not implemented"""
 
         print 'Not implemented!'
 
 def is_catalogue_link(link):
-    ''' check whether the specified link points to a catalogue '''
+    """check whether the specified link points to a catalogue"""
 
     return link['type'] == 'application/atom+xml' and 'rel' not in link
 
 def is_catalogue(links):
-    ''' check whether the specified set of links is for a catalogue
+    """check whether the specified set of links is for a catalogue
 
-(unfortunately, currently there's no better way to distinguish between
-catalogue & book entries
-'''
+    (unfortunately, currently there's no better way to distinguish between
+    catalogue & book entries
+    """
     return len([ link for link in links if is_catalogue_link(link) ]) > 0
 
 def get_item(entry):
-    '''\
-determines the entry type (catalog/book) and creates an instance of the
-corresponding QListWidgetItem derivative
+    """
+    determines the entry type (catalog/book) and creates an instance of the
+    corresponding QListWidgetItem derivative
 
-:param entry: list of { 'type' : <type>, 'href' : <href>, ... }
-:rtype: OPDSGeneric/OPDSCatalogue/OPDSEntry
-'''
+    :param entry: list of { 'type' : <type>, 'href' : <href>, ... }
+    :rtype: OPDSGeneric/OPDSCatalogue/OPDSEntry
+    """
     if is_catalogue(entry['links']):
         result = OPDSCatalogue(entry)
     else:
@@ -270,7 +270,7 @@ class OPDSBrowser(QtGui.QMainWindow):
         self.go_home()
 
     def _create_widgets(self):
-        ''' create all necessary widgets '''
+        """create all necessary widgets"""
         self._items = QtGui.QListWidget()
 
         self._items.currentItemChanged.connect(self.update_preview)
@@ -314,7 +314,7 @@ class OPDSBrowser(QtGui.QMainWindow):
         toolbar.addWidget(self._search)
 
     def _disable_search(self):
-        ''' disable search functionality '''
+        """disable search functionality"""
 
         self._search_what.clear()
         self._search_what.addItem('<No search>')
@@ -323,7 +323,7 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._search.setDisabled(True)
 
     def _add_search_item(self, name, link):
-        ''' adds a search item to the combobox '''
+        """adds a search item to the combobox"""
 
         # TODO: should I validate the link first (must have {searchTerms})?
 
@@ -336,12 +336,12 @@ class OPDSBrowser(QtGui.QMainWindow):
         self._search_what.addItem(name, QtCore.QVariant(link))
 
     def open_link(self, link):
-        ''' opens the link in an external browser '''
+        """opens the link in an external browser"""
 
         webbrowser.open(link.toString())
 
     def _cached_data(self, url):
-        ''' a simple cache for downloaded data '''
+        """a simple cache for downloaded data"""
 
         if url not in self._cache:
             self._cache[url] = load(url, True)
@@ -349,7 +349,7 @@ class OPDSBrowser(QtGui.QMainWindow):
         return self._cache[url]
 
     def _load_url(self, url):
-        ''' loads the provided URL '''
+        """loads the provided URL"""
         self._current_url = url
 
         data = self._cached_data(url)
@@ -372,11 +372,12 @@ class OPDSBrowser(QtGui.QMainWindow):
             self._add_search_item(link.get('title', 'Search'), link['href'])
 
     def load_url(self, url):
-        '''\
-loads the provided URL
+        """
+        loads the provided URL
 
-This method stores the currently viewed URL in the `_history` and then calls `_load_url`.
-'''
+        This method stores the currently viewed URL in the `_history` and then
+        calls `_load_url`.
+        """
         if self._current_url is not None:
             self._history.append(self._current_url)
 
@@ -389,18 +390,18 @@ This method stores the currently viewed URL in the `_history` and then calls `_l
             self._text_viewer.setHtml(current.html())
 
     def load_item(self, item):
-        ''' activate the double-clicked item '''
+        """activate the double-clicked item"""
 
         item.activate(self)
 
     def go_home(self):
-        ''' do go home! :) '''
+        """do go home! :)"""
 
         self._history = []  # clear the history
         self._load_url(self._home_url)
 
     def go_back(self):
-        ''' 'back' implementation '''
+        """'back' implementation"""
 
         if len(self._history) > 0:
             self._load_url(self._history.pop())
@@ -411,7 +412,7 @@ This method stores the currently viewed URL in the `_history` and then calls `_l
         print 'add'
 
     def do_search(self):
-        ''' perform the search '''
+        """perform the search"""
 
         qv_link = self._search_what.itemData(self._search_what.currentIndex())
 
@@ -427,7 +428,7 @@ This method stores the currently viewed URL in the `_history` and then calls `_l
             pass    # should I print something or show a dialog here?
 
 def main(args):
-    ''' the actual worker '''
+    """the actual worker"""
     app = QtGui.QApplication(args)
 
     browser = OPDSBrowser('http://www.feedbooks.com/catalog.atom')

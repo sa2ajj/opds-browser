@@ -15,7 +15,9 @@
 #  License for the specific language governing permissions and limitations
 #  under the License.
 
-''' A simple wrapper over urllib2 & ElementTree to extract data from OPDS catalogs '''
+"""
+A simple wrapper over urllib2 & ElementTree to extract data from OPDS catalogs
+"""
 
 import sys
 
@@ -51,17 +53,17 @@ UPDATED_ELEM = '{%s}updated' % ATOM_NS
 CONTENT_ELEM = '{%s}content' % ATOM_NS
 
 def parse_link(link):
-    '''\
-a simple "parser" for the <link>
+    """
+    a simple "parser" for the <link>
 
-basically just returns the attirbutes
-'''
+    basically just returns the attirbutes
+    """
     assert link.tag == LINK_ELEM
 
     return link.attrib
 
 def parse_author(author):
-    ''' extracts textual information from pre-defined children '''
+    """extracts textual information from pre-defined children"""
 
     assert author.tag == AUTHOR_ELEM
 
@@ -81,7 +83,7 @@ def parse_author(author):
     return result
 
 def remove_qualifaction(root, namespace):
-    ''' removes the specified namespace '''
+    """removes the specified namespace"""
 
     namespace_len = len(namespace)
 
@@ -92,7 +94,7 @@ def remove_qualifaction(root, namespace):
     return root
 
 def parse_entry(entry):
-    ''' parses the entry '''
+    """parses the entry"""
 
     author = None
     title = None
@@ -136,7 +138,7 @@ def parse_entry(entry):
     }
 
 def parse_catalog(catalog):
-    ''' parses an atom feed thinking that it is OPDS compliant '''
+    """parses an atom feed thinking that it is OPDS compliant"""
 
     author = None
     title = None
@@ -165,7 +167,7 @@ def parse_catalog(catalog):
     }
 
 def load(url, normalize_links=False):
-    ''' open the specified url, parse the data '''
+    """open the specified url, parse the data"""
 
     request = Request(url)
     request.add_header('User-Agent', 'OPDS Browser')
@@ -179,7 +181,7 @@ def load(url, normalize_links=False):
     return parse_catalog(root)
 
 def main(url):
-    ''' pretty much test code '''
+    """pretty much test code"""
 
     print url
     print '='*len(url)
