@@ -21,7 +21,9 @@ A simple wrapper over urllib2 & ElementTree to extract data from OPDS catalogs
 
 import sys
 
-assert sys.version_info[0] > 2 or (sys.version_info[0] == 2 and sys.version_info[1] >= 5), 'Sorry, you need a more recent version of python'
+assert sys.version_info[0] > 2 or \
+       (sys.version_info[0] == 2 and sys.version_info[1] >= 5),\
+       'Sorry, you need a more recent version of python'
 
 from urllib2 import urlopen, Request
 from urlparse import urljoin
@@ -128,13 +130,13 @@ def parse_entry(entry):
             others.append(unicode(tostring(remove_qualifaction(child, ATOM_NS_PREFIX), 'utf-8'), 'utf-8'))
 
     return {
-        'author' : author,
-        'title' : title,
-        'links' : links,
-        'dcore' : dcore,
-        'content' : content,
-        'others' : others,
-        'updated' : updated
+        'author': author,
+        'title': title,
+        'links': links,
+        'dcore': dcore,
+        'content': content,
+        'others': others,
+        'updated': updated
     }
 
 def parse_catalog(catalog):
