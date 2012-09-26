@@ -74,10 +74,16 @@ class OPDSGeneric(QtGui.QListWidgetItem):
         self.init_item()
 
     def init_item(self):
+        """
+        set item icon and text
+        """
         self.setIcon(get_icon('default.png', 'images/default.png'))
         self.setText(self._entry['title'][1])
 
     def html(self):
+        """
+        produce HTML representation for the entry
+        """
         result = [
             '<h1>%s</h1>' % escape(self._entry['title'][1]),
             '<small>Last updated: %s</small>' % self._entry['updated']
@@ -125,10 +131,8 @@ class OPDSEntry(OPDSGeneric):
         super(OPDSEntry, self).__init__(entry, QtGui.QListWidgetItem.Type+2)
 
     def html(self):
-        """prepare HTML for showing in the right pane
-
-        FIXME: the code is actually not nice at all.  Some sort of templating
-        engine must be used
+        """
+        prepare HTML for showing in the right pane
         """
         result = [
             '<h1>%s</h1>' % escape(self._entry['title'][1]),
@@ -410,6 +414,9 @@ class OPDSBrowser(QtGui.QMainWindow):
             self._back.setDisabled(True)
 
     def add_item(self):
+        """
+        ...
+        """
         print 'add'
 
     def do_search(self):
